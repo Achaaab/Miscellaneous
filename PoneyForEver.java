@@ -115,6 +115,13 @@ public class PoneyForEver {
 		this.santeHeroBas = santeHeroBas;
 	}
 
+	/**
+	 * Lance les couteaux vers le bas, met à jour les PV des jongleurs et du héro et comptabilise le poneys morts.
+	 * 
+	 * @param couteaux
+	 *            le nombre de couteaux à lancer
+	 * @return le nombre de couteaux à lancer vers le haut suite à la résurrection des poneys morts en bas
+	 */
 	int lancerBas(int couteaux) {
 
 		List<Integer> cibles = new ArrayList<>();
@@ -184,6 +191,13 @@ public class PoneyForEver {
 		return poneysMorts * jongleursBas;
 	}
 
+	/**
+	 * Lance les couteaux vers le haut, met à jour les PV des jongleurs et du héro et comptabilise le poneys morts.
+	 * 
+	 * @param couteaux
+	 *            le nombre de couteaux à lancer
+	 * @return le nombre de couteaux à lancer vers le bas suite à la résurrection des poneys morts en haut
+	 */
 	int lancerHaut(int couteaux) {
 
 		List<Integer> cibles = new ArrayList<>();

@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * Simulation de l'expérience menée dans la vidéo : https://www.youtube.com/watch?v=IPK6BXQ9HCQ.
+ * 
+ * @author Jonathan Guéhenneux
+ */
 public class PoneyForEver {
 
 	static final int JONGLEUR_GAUCHE = 0;
@@ -12,6 +17,7 @@ public class PoneyForEver {
 	static final int PONEY = 2;
 	static final int HERO = 3;
 
+	static final double DUREE_COUTEAU = 4.4;
 	static final Random RANDOM = new Random();
 
 	public static void main(String[] args) {
@@ -22,7 +28,7 @@ public class PoneyForEver {
 
 		Map<Integer, Integer> statistiques = new HashMap<>();
 		int essais = 0;
-		int nombreEssais = 10000;
+		int nombreEssais = 100000;
 
 		// LANCEMENT DES TESTS
 
@@ -40,8 +46,12 @@ public class PoneyForEver {
 			total += couteaux;
 			couteaux = board.lancerBas(couteaux);
 
-			// on récupère le poney du bas, dorénavant, les poneys seront tous vivants avant un lancer de couteaux
+			// on ressuscite le poney du bas, dorénavant, les poneys seront tous vivants avant un lancer de couteaux
 			board.nombrePoneysBas++;
+
+			// la résurrection du poney (tué par le poney du haut, pas par un couteau) déclenche 2 couteaux (on suppose,
+			// pour simplifier, que les 2 jongleurs étaient vivants)
+			couteaux += 2;
 
 			// on boucle tant que des couteaux sont lancés
 			while (couteaux > 0) {
@@ -66,28 +76,25 @@ public class PoneyForEver {
 		Collections.sort(nombresCouteaux);
 		int nombreFois;
 		double duree;
-		long nombreCouteauxTotal = 0;
-		double seuil = 3600;
-		double nombreEssaisLongs = 0;
+		int cumulNombreFois = 0;
+		int nombreCouteauxMedian = 0;
 
 		for (int nombreCouteaux : nombresCouteaux) {
 
-			duree = nombreCouteaux * 4.4;
-			nombreCouteauxTotal += nombreCouteaux;
 			nombreFois = statistiques.get(nombreCouteaux);
 
-			if (duree >= seuil) {
-				nombreEssaisLongs += nombreFois;
+			if (cumulNombreFois <= nombreEssais / 2 && cumulNombreFois + nombreFois > nombreEssais / 2) {
+				nombreCouteauxMedian = nombreCouteaux;
 			}
 
+			cumulNombreFois += nombreFois;
+
+			duree = Math.round(nombreCouteaux * DUREE_COUTEAU);
 			System.out.println(Math.round(duree) + "\t" + nombreFois);
 		}
 
-		double pourcentageEssaiLong = 100 * nombreEssaisLongs / nombreEssais;
-		System.out.println(pourcentageEssaiLong + "% d'essais supérieurs à " + seuil + " secondes");
-
-		duree = Math.round(nombreCouteauxTotal * 4.4 / 1000);
-		System.out.println("durée moyenne : " + duree + " secondes");
+		duree = Math.round(nombreCouteauxMedian * DUREE_COUTEAU);
+		System.out.println("durée médiane : " + duree + " secondes");
 	}
 
 	int nombrePoneysHaut;
